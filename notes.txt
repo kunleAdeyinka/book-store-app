@@ -1,0 +1,111 @@
+BOOKSTORE APPLICATION
+=======================================================================================================================================================
+A. Architecture
+=======================================================================================================================================================
+
+client --->[Bookstore WebApp]------->[API Gateway]----------->[Catalog Service]
+                |                       |             |
+				|                       |             |
+				|                       V             V
+				|------------>[OAuth Server]<-----[Order Service]------->[RabbitMQ]----->[Notification Service]
+
+
+
+=======================================================================================================================================================
+B. Introduction to Microservices Architecture
+=======================================================================================================================================================
+
+1. Microservices:
+- is an archetectural style where large applications are composed of small services
+- these services provide specific business capabilities that can be deployed and managed independently
+
+a. Pros:
+- can scale individual services
+- smaller codebases for each service
+- easy to adopt new technologies
+- less dependant on other teams and their delivarables
+
+b. Cons:
+- difficulty in managing and building distributed systems
+- difficulty in testing and debugging
+- complex deployment process
+- performance issues
+
+
+2. Monolithic Architecture
+
+a. Pros:
+- simpler development
+- easier testing and debugging
+- simpler deployment
+
+b. Cons:
+- difficutl to scale modules
+- difficult to adobpt new technologies
+- higher change to become muddled with code
+
+
+
+=======================================================================================================================================================
+C. Components
+=======================================================================================================================================================
+1. Technologies Used
+
+a. Kubernetes
+b. Docker
+
+2. Services Not Used
+
+a. Spring Cloud Config Server
+	- manages all the configuration of the microservices in one central repository
+	- won't be used in this project but will use kubernetes
+
+b. Service Registry(Eureka, Consul)
+	- registers all the instances of a microservice that are running and directs requests to these instances
+	- there is a feature provided by Kubernetes called Pods which are service instances and service which is the service register
+
+
+3. Modules:
+
+a. catalog-service:
+	- provides REST API for managing catalog of products(books)
+	- stack: spring boot, spring data jpa. postgresql
+
+b. order-service:
+	- provides the REST API endpoints for managing orders and publishing order events to the message broker
+	- stack: spring boot, spring security oauth2, keycloak, spring data jpa, postgresql, rabbitmq
+
+c. notification-service:
+	- listens to the order events and sends the notifications to the users
+	- stack: spring boot, rabbitmq
+
+d. api-gateway:
+	- is the gateway to all the internal backend services
+
+e. bookstore-webapp:
+	- this is a customer facing web app where customers can browser the catalog, place orders and view their order details.
+
+
+
+=======================================================================================================================================================
+D. Catalog Service
+=======================================================================================================================================================
+
+1. Tasks
+
+1. Create root maven project
+2. create catalog-service walking skeleton (setup the service and Configure the services)
+	- task is to create a new spring boot microservice with the name catalog-service and add the features below:
+	- add dependecies:web, validation, spring data jpa, flyway, postgresql, actuator, prometheous, devtools, configuration processor, testcontainers
+	- add springdoc-openapi dependency
+	- add rest-assured
+	- add git-commit-id-maven plugin
+	- add spotless maven plugin
+	- create docker compose file for postgresql
+	- add github action workflow
+	- docker compose -f infra.yml up -d
+	- task: task(runs all the default commands, must add path to mvnw.cmd to PATH variable)
+3. Implment Get products api with pagination
+4. Implement get product by code api endpoint
+5. dockerize catalog-service
+
